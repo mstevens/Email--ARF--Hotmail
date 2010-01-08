@@ -3,6 +3,8 @@ package Email::ARF::Hotmail;
 use 5.008009;
 use strict;
 use warnings;
+use Email::ARF::Report;
+use Email::MIME;
 
 require Exporter;
 
@@ -26,60 +28,68 @@ our @EXPORT = qw(
 );
 
 our $VERSION = '0.00_01';
-$VERSION = eval $VERSION;  # see L<perlmodstyle>
+$VERSION = eval $VERSION;
 
+sub create_report {
+	my $class = shift;
+	my $message = shift;
 
-# Preloaded methods go here.
+	my $parsed = Email::MIME->new($message);
+
+	if ($parsed->header("X-Original-Sender") eq 'staff@hotmail.com' or $parsed->header("Sender") eq 'staff@hotmail.com') {
+		my $description = "An email abuse report from hotmail";
+		my %fields;
+		$fields{"Feedback-Type"} = "abuse";
+		$fields{"User-Agent"} = "Email::ARF::Hotmail-conversion";
+		$fields{"Version"} = "0.1";
+		my ($source_ip) = ($parsed->header("Subject") =~ /^complaint about message from (\w+$)/);
+		$fields{"Source-IP"} = $source_ip;
+		my $original_email = ($parsed->parts)[0];
+
+		return Email::ARF::Report->create(
+				original_email => $original_email,
+				description => $description,
+				fields => \%fields
+			);
+
+	} else {
+		die "Not a hotmail abuse report";
+	}
+}
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
-
 =head1 NAME
 
-Email::ARF::Hotmail - Perl extension for blah blah blah
+Email::ARF::Hotmail - Perl extension for Hotmail Abuse reports
 
 =head1 SYNOPSIS
 
   use Email::ARF::Hotmail;
-  blah blah blah
+
+  my $report = Email::ARF::Hotmail->create($message);
 
 =head1 DESCRIPTION
 
-Stub documentation for Email::ARF::Hotmail, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
-
-Blah blah blah.
-
-=head2 EXPORT
-
-None by default.
-
-
+This is a perl module to process Hotmail abuse reports (which are not in ARF) and generate
+Email::ARF::Report objects.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
+* Email::ARF::Report
 
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+* http://postmaster.live.com/Services.aspx
 
 =head1 AUTHOR
 
-A. U. Thor, E<lt>mstevens@server2.dianomi.co.ukE<gt>
+Michael Stevens, E<lt>mstevens@etla.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2010 by A. U. Thor
+Copyright (C) 2010 by Michael Stevens
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.9 or,
 at your option, any later version of Perl 5 you may have available.
-
 
 =cut
