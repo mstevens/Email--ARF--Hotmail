@@ -1,6 +1,9 @@
-Changes
 Makefile.PL
-MANIFEST
-README
+t/complaint.t
+t/corpus/hotmail.msg
 t/Email-ARF-Hotmail.t
+t/pod_coverage.t
+MANIFEST
 lib/Email/ARF/Hotmail.pm
+Changes
+README
