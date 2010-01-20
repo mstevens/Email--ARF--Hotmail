@@ -20,6 +20,7 @@ DEPENDENCIES
 This module requires these other modules and libraries:
 
 	Email::ARF version 0.005
+	Email::MIME
 
 COPYRIGHT AND LICENCE
 
