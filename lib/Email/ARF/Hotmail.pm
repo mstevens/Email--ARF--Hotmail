@@ -67,7 +67,7 @@ Email::ARF::Hotmail - Perl extension for Hotmail Abuse reports
 
   use Email::ARF::Hotmail;
 
-  my $report = Email::ARF::Hotmail->create($message);
+  my $report = Email::ARF::Hotmail->create_report($message);
 
 =head1 DESCRIPTION
 
@@ -78,7 +78,7 @@ Email::ARF::Report objects.
 
 =head2 create_report
 
-  my $report = Email::ARF::Hotmail->create($message);
+  my $report = Email::ARF::Hotmail->create_report($message);
   
 Creates an Email::ARF::Report object or dies with an error if the message
 cannot be parsed as a hotmail abuse report.
