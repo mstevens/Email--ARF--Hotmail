@@ -1,5 +1,10 @@
 Revision history for Perl extension Email::ARF::Hotmail.
 
+0.02 Wed Jan 2 17:39 2010
+	- Increase version number
+	- fix stupid documentation mistake
+	- document quoted printable problem
+
 0.00_01  Fri Jan  8 11:12:09 2010
 	- original version; created by h2xs 1.23 with options
 		-A -B -X -n Email::ARF::Hotmail

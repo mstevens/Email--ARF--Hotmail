@@ -83,6 +83,11 @@ Email::ARF::Report objects.
 Creates an Email::ARF::Report object or dies with an error if the message
 cannot be parsed as a hotmail abuse report.
 
+=head1 BUGS
+
+Something weird is going on with encoding of the original email. For the
+moment, you may need to decode it from quoted printable.
+
 =head1 SEE ALSO
 
 * Email::ARF::Report
