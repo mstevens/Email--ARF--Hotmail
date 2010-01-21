@@ -10,4 +10,5 @@ WriteMakefile(
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Email/ARF/Hotmail.pm', # retrieve abstract from module
        AUTHOR         => 'Michael Stevens <mstevens@etla.org') : ()),
+	LICENSE => 'perl',
 );
