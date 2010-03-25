@@ -1,6 +1,6 @@
 package Email::ARF::Hotmail;
 
-use 5.008009;
+use 5.008001;
 use strict;
 use warnings;
 use Email::ARF::Report;
@@ -27,7 +27,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 $VERSION = eval $VERSION;
 
 sub create_report {

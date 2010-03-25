@@ -1,5 +1,11 @@
 Revision history for Perl extension Email::ARF::Hotmail.
 
+0.03 Thu Mar 25 11:06 2010
+	- Lower perl version requirement, after it was pointed out it probably does work
+		pre 5.8.9.
+		Still being a bit conservative until I get success reports on earlier 
+		versions.
+
 0.02 Wed Jan 2 17:39 2010
 	- Increase version number
 	- fix stupid documentation mistake
