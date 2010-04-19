@@ -144,6 +144,8 @@ moment, you may need to decode it from quoted printable.
 
 Michael Stevens, E<lt>mstevens@etla.orgE<gt>
 
+Also with contributions from Mark Zealey E<lt>mark.zealey@webfusion.comE<gt>
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2010 by Michael Stevens
