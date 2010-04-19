@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Email::ARF::Report;
 use Email::MIME;
+use Regexp::Common qw/net/;
 
 require Exporter;
 
@@ -27,35 +28,80 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.04';
+our $VERSION = '0.05-alpha';
 $VERSION = eval $VERSION;
+
+use constant HOTMAIL_SENDER => 'staff@hotmail.com';
+
+sub _is_hotmail_report {
+  my $parsed = shift;
+
+  if (defined($parsed->header("X-Original-Sender")) and $parsed->header("X-Original-Sender") eq HOTMAIL_SENDER) {
+	return 1;
+  }
+  
+  if (defined($parsed->header("Sender")) and $parsed->header("Sender") eq HOTMAIL_SENDER) {
+	return 1;
+  }
+
+  if (defined($parsed->header("From")) and $parsed->header("From") eq HOTMAIL_SENDER) {
+	return 1;
+  }
+
+  return 0;
+}
 
 sub create_report {
 	my $class = shift;
 	my $message = shift;
 
 	my $parsed = Email::MIME->new($message);
+	
+	if (_is_hotmail_report($parsed)) {
+	  # Get the original email and strip off all the extra header bits
+	  my $part = ($parsed->parts)[0];
+	  my $orig_email = $part->body;
+	  $orig_email =~ s/^(.*?)\n(Received: )/$2/s;
+	  my $hotmail_headers = Email::Simple::Header->new($1);
+	  
+	  my $description = "An email abuse report from hotmail";
+	  my %fields;
+	  $fields{"Feedback-Type"} = "abuse";
+	  $fields{"User-Agent"} = "Email::ARF::Hotmail-conversion";
+	  $fields{"Version"} = "0.1";
 
-	if ($parsed->header("X-Original-Sender") eq 'staff@hotmail.com' or $parsed->header("Sender") eq 'staff@hotmail.com') {
-		my $description = "An email abuse report from hotmail";
-		my %fields;
-		$fields{"Feedback-Type"} = "abuse";
-		$fields{"User-Agent"} = "Email::ARF::Hotmail-conversion";
-		$fields{"Version"} = "0.1";
-		my ($source_ip) = ($parsed->header("Subject") =~ /^complaint about message from (\w+$)/);
-		$fields{"Source-IP"} = $source_ip;
-		my $original_email = ($parsed->parts)[0];
+	  my $subject = $parsed->header("Subject");
 
-		return Email::ARF::Report->create(
-				original_email => $original_email,
-				description => $description,
-				fields => \%fields
-			);
+	  print "Parsed subject: [" . $subject . "]\n";
+	  my $source_ip;
 
+	  if ($subject =~ /complaint about message from ($RE{net}{IPv4})$/) {
+		$source_ip = $1;
+	  } else {
+		die "Couldn't match subject: " . $subject;
+	  }
+
+	  print "Source IP: $source_ip\n";
+	  $fields{"Source-IP"} = $source_ip;
+ 
+	  my $or = $hotmail_headers->header('X-HmXmrOriginalRecipient');
+
+	  if ($or) {
+		$fields{'Original-Rcpt-To'} = $or;
+	  }
+	  
+	  my $original_email = Email::MIME->new($orig_email);
+	  
+	  return Email::ARF::Report->create(
+										original_email => $original_email,
+										description => $description,
+										fields => \%fields
+									   );
+	  
 	} else {
-		die "Not a hotmail abuse report";
+	  die "Not a hotmail abuse report";
 	}
-}
+  }
 
 1;
 __END__
