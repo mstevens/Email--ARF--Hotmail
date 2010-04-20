@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::ARF::Hotmail.
 
+0.05 Tue Apr 20 14:37 2010
+    - Got some cleaner headers from internal systems and added
+      better test cases based on them.
+
 0.05-alpha Mon Apr 19 18:43 2010
     - Added parsing changes based on headers from Mark Zealey
     - Added Regexp::Common dependency
