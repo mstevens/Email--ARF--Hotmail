@@ -28,7 +28,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.05-alpha';
+our $VERSION = '0.05';
 $VERSION = eval $VERSION;
 
 use constant HOTMAIL_SENDER => 'staff@hotmail.com';
