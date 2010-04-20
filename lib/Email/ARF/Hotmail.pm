@@ -54,9 +54,14 @@ sub create_report {
 	  # Get the original email and strip off all the extra header bits
 	  my $part = ($parsed->parts)[0];
 	  my $orig_email = $part->body;
-	  $orig_email =~ s/^(.*?)\n(Received: )/$2/s;
-	  my $hotmail_headers = Email::Simple::Header->new($1);
-	  
+	  my $hotmail_headers;
+	  if ($orig_email =~ /Received: /) {
+		$orig_email =~ s/^(.*?)\n(Received: )/$2/s;
+		$hotmail_headers = Email::Simple::Header->new($1);
+	  } else {
+		$hotmail_headers = Email::Simple::Header->new($orig_email);
+	  }
+
 	  my $description = "An email abuse report from hotmail";
 	  my %fields;
 	  $fields{"Feedback-Type"} = "abuse";
@@ -65,7 +70,6 @@ sub create_report {
 
 	  my $subject = $parsed->header("Subject");
 
-	  print "Parsed subject: [" . $subject . "]\n";
 	  my $source_ip;
 
 	  if ($subject =~ /complaint about message from ($RE{net}{IPv4})$/) {
@@ -74,7 +78,6 @@ sub create_report {
 		die "Couldn't match subject: " . $subject;
 	  }
 
-	  print "Source IP: $source_ip\n";
 	  $fields{"Source-IP"} = $source_ip;
  
 	  my $or = $hotmail_headers->header('X-HmXmrOriginalRecipient');
