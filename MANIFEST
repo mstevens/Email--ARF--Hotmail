@@ -1,8 +1,10 @@
 Makefile.PL
 t/complaint.t
 t/complaint3.t
+t/hotmail-complaint.t
 t/corpus/hotmail.msg
 t/corpus/hotmail2.msg
+t/corpus/hotmail-complaint.msg
 t/Email-ARF-Hotmail.t
 t/pod_coverage.t
 t/pod.t
