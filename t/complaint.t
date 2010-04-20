@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use Test::More tests => 1;
+use Test::More tests => 5;
 
 use Email::ARF::Hotmail;
 
@@ -23,3 +23,7 @@ my $des = $report->description;
 chomp $des;
 
 is($des, "An email abuse report from hotmail", "description is right");
+is($report->field("Source-IP"), "1.2.3.4", "source IP is right");
+is($report->field("Feedback-Type"), "abuse", "feedback type is right");
+is($report->field("User-Agent"), "Email::ARF::Hotmail-conversion", "user agent is right");
+is($report->field("Version"), "0.1", "version is right");
