@@ -35,17 +35,10 @@ use constant HOTMAIL_SENDER => 'staff@hotmail.com';
 
 sub _is_hotmail_report {
   my $parsed = shift;
-
-  if (defined($parsed->header("X-Original-Sender")) and $parsed->header("X-Original-Sender") eq HOTMAIL_SENDER) {
-	return 1;
-  }
-  
-  if (defined($parsed->header("Sender")) and $parsed->header("Sender") eq HOTMAIL_SENDER) {
-	return 1;
-  }
-
-  if (defined($parsed->header("From")) and $parsed->header("From") eq HOTMAIL_SENDER) {
-	return 1;
+  foreach my $field (('X-Original-Sender', 'Sender', 'From')) {
+	if (defined($parsed->header($field)) and $parsed->header($field) eq HOTMAIL_SENDER) {
+	  return 1;
+	}
   }
 
   return 0;
